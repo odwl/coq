@@ -135,3 +135,16 @@ Proof.
     split. 
     - intros f. split; intro a; destruct (f a); assumption.  
     - intros [f g] a; exact ( conj (f a) (g a)). 
+Qed.
+
+Lemma ex17b: ((A \/ B) -> C) <-> ((A -> C) /\ (B -> C)).
+Proof.
+    split. 
+    - intro f; split; intros; apply f; [left|right]; assumption.
+    - intros [f g][?|?]; [apply f | apply g]; assumption.
+Qed.
+(* - intros [f g]. 
+exact (fun ab => match ab with 
+| or_introl a => f a
+| or_intror b => g b
+end). *)
