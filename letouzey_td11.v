@@ -123,3 +123,15 @@ Qed.
     (* - intros f; split. exact(fun x => proj1 (f x)). exact(fun x => proj2 (f x)). *)
     (* - exact(fun '(conj f g) x => conj (f x) (g x)). *)
 
+Lemma ex16b: (exists x, D x \/ E x) <-> (exists x, D x) \/ (exists x, E x).
+Proof.
+    split.
+    - intros [x[?|?]]; [left|right]; exists x; assumption.
+    - intros [[x?]|[x?]]; exists x; [left|right]; assumption.
+Qed.
+
+Lemma ex17a: (A -> (B /\ C)) <-> ((A -> B) /\ (A -> C)).
+Proof.
+    split. 
+    - intros f. split; intro a; destruct (f a); assumption.  
+    - intros [f g] a; exact ( conj (f a) (g a)). 
