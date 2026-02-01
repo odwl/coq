@@ -1,8 +1,7 @@
 Require Import Classical.
-Section Peirce_Fix.
   
   (* Redefine A and B as simple Propositions *)
-  Variables A B : Prop. 
+  Parameters A B : Prop. 
   
 
   (* Now Coq knows this is a logical formula, not a function type *)
@@ -14,7 +13,6 @@ Section Peirce_Fix.
         ))
       ). *)
 
-End Peirce_Fix.
 
 
 
