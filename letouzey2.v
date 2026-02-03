@@ -8,8 +8,8 @@ Lemma ex : (A -> B -> C) -> (A -> B) -> A -> C.
     exact A0.
     apply AB.
     assumption.
-Qed.
 
+Qed.
 Lemma Exa1 : A -> A.
   intro H. exact H.
 Qed.

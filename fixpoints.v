@@ -1,4 +1,7 @@
-Require Import List.
+
+From Stdlib Require Import List.
+
+(* Require Import List. *)
 Import ListNotations.
 
 Fixpoint last {A : Type} (l : list A) (d : A) : A :=
@@ -18,5 +21,6 @@ Proof.
   repeat split.
 (*   repeat split; reflexivity. *)
 Qed.
+
   
 

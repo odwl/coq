@@ -1,4 +1,4 @@
-Require Import Classical.
+From Stdlib Require Import Logic.Classical.
 
 Section Peirce_Fix.
   Variables A B : Prop.

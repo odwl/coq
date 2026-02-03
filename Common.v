@@ -1,4 +1,4 @@
-From Stdlib Require Import Logic.Classical_Prop.
+From Stdlib Require Import Logic.Classical.
 
 Tactic Notation "check" constr(P) "as" ident(p) ident(np) := 
   destruct (classic P) as [p | np].
