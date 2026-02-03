@@ -1,4 +1,5 @@
 Require Import MyProject.Common.
+From Coq Require Import Classical_Prop.
 
 Section Ex2.
 Parameters X Y : Type.
@@ -88,7 +89,6 @@ Proof.
 Qed.
 End Ex3.
 
-Require Import Coq.Logic.Classical_Prop.
 
 Section Ex4.
 Variable A B : Prop.
@@ -136,8 +136,6 @@ Proof.
     - intros nab. split; contradict nab; [now left | now right].
 Qed.
 
-Notation "( x ; p )" := (ex_intro _ x p).
-
 Parameter P : X -> Prop.
 Lemma not_forall_equiv : ~ (forall x : X, P x) <-> exists x : X, ~ P x.
 Proof.
@@ -149,8 +147,6 @@ split.
  (* intros [x np] fp. now contradict np. *)
 Qed.
 
-Tactic Notation "check" constr(P) "as" ident(p) ident(np) := 
-  destruct (classic P) as [p | np].
 Lemma not_forall_equiv2 : ~ (forall x : X, P x) <-> exists x : X, ~ P x.
 Proof.
 split. 
@@ -177,15 +173,10 @@ Proof.
         + exact(L na).
     - now intros [?|?] ?. 
 
-Definition Case {P Result : Prop} (yes : P -> Result) (no : ~P -> Result) : Result :=
-  or_ind yes no (classic P).
 Lemma imp_equiv2 : (A -> B) <-> (~A \/ B).
 Proof.
     split. 
     - intros ab. exact(Case (fun a:A => R (ab a))(fun na => L na)).
     - now intros [?|?] ?. 
-
-
-
 
 
