@@ -1,3 +1,5 @@
+Require Import MyProject.Common.
+
 Section Ex2.
 Parameters X Y : Type.
 Parameters A : X -> Y -> Prop.
@@ -147,12 +149,14 @@ split.
  (* intros [x np] fp. now contradict np. *)
 Qed.
 
+Tactic Notation "check" constr(P) "as" ident(p) ident(np) := 
+  destruct (classic P) as [p | np].
 Lemma not_forall_equiv2 : ~ (forall x : X, P x) <-> exists x : X, ~ P x.
 Proof.
 split. 
-- intros nf. 
-
-- intros nf. apply NNPP. contradict nf. intro x. apply NNPP. exact(fun np => nf (x ; np)).
+- intros nf. apply NNPP. contradict nf. intro x. check (P x) as px npx. 
+    + assumption.
+    + case (nf (x ; npx)).  
 - intros [x np] fp. exact(np (fp x)).
 
 Lemma not_exists_equiv : ~ (exists x : X, P x) <-> forall x : X, ~ P x.
@@ -164,8 +168,7 @@ Qed.
 
 Definition L {A B} (x : A) : A \/ B := or_introl x.
 Definition R {A B} (y : B) : A \/ B := or_intror y.
-Tactic Notation "check" constr(P) "as" ident(p) ident(np) := 
-  destruct (classic P) as [p | np].
+
 Lemma imp_equiv : (A -> B) <-> (~A \/ B).
 Proof.
     split. 
