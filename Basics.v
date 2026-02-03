@@ -1,5 +1,15 @@
-
 From Stdlib Require Import Bool.Bool.
+Open Scope bool_scope.
+
+Definition nandb (b1 b2:bool) : bool := negb b1 || negb b2.
+Example test_nandb1: (nandb true false) = true.
+Proof. easy. Qed.
+Example test_nandb2: (nandb false false) = true.
+Proof. easy. Qed.
+Example test_nandb3: (nandb false true) = true.
+Proof. easy. Qed.
+Example test_nandb4: (nandb true true) = false.
+Proof. easy. Qed.
 
 Definition andb3 (b1 b2 b3:bool) : bool := b1 && (b2 && b3).
 
@@ -12,31 +22,3 @@ Proof. easy. Qed.
 Example test_andb34: (andb3 true true false) = false.
 Proof. easy. Qed.
 
-
-
-(* 
-Inductive day : Type :=
-  | monday
-  | tuesday
-  | wednesday
-  | thursday
-  | friday
-  | saturday
-  | sunday.
-
-
-Definition next_working_day (d:day) : day :=
-  match d with
-  | monday => tuesday
-  | tuesday => wednesday
-  | wednesday => thursday
-  | thursday => friday
-  | friday => monday
-  | saturday => monday
-  | sunday => monday
-  end.
-
-(* Compute (next_working_day friday). *)
-Example test_next_working_day:
-  (next_working_day (next_working_day saturday)) = tuesday.
-Proof. easy. Qed. *)
