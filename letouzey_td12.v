@@ -1,5 +1,5 @@
 Section Ex2.
-Parameters X Y : Prop.
+Parameters X Y : Type.
 Parameters A : X -> Y -> Prop.
 
 Lemma ex21a :  (forall x, forall y, A x y) <-> (forall y, forall x, A x y).
@@ -18,14 +18,12 @@ Proof.
 Qed.
 End Ex2.
 
-
 Section Ex3.
+Parameters U V : Prop.
 
 Inductive Heart (A B : Prop) : Prop :=
   | heart_intro : A -> B -> Heart A B.
   
-  
-Parameters U V : Prop.
 Lemma heart_and : (Heart U V) <-> (U /\ V).
 Proof. 
 split; intros [??]; now constructor.
@@ -87,3 +85,104 @@ Proof.
     - intro. now constructor.
 Qed.
 End Ex3.
+
+Require Import Coq.Logic.Classical_Prop.
+
+Section Ex4.
+Variable A B : Prop.
+
+Lemma double_neg : ~~A -> A.
+Proof.
+    intro nna. exact(NNPP A nna).
+    (* now apply NNPP.  *)
+Qed.
+
+Lemma tiers_excl : A \/ ~A.
+Proof.
+    exact( classic A).
+Qed.    
+
+Lemma not_tau2: ~A <-> (A -> False).
+Proof.
+    reflexivity.
+Qed.
+
+Lemma not_tau: ~True <-> False.
+Proof. 
+    easy. 
+Qed.
+
+Lemma not_bot: ~False <-> True.
+Proof. 
+    split; easy. 
+Qed.
+
+(* tricky side *)
+Lemma de_morgan_and : (~A \/ ~B) <-> ~(A /\ B).
+Proof. 
+    split. 
+    - now intros [?|?][? ?].
+    - intros nab; destruct (classic A).
+        + right; now contradict nab.
+        + now left.
+Qed.
+
+Lemma de_morgan_or : (~A /\ ~B) <-> ~(A \/ B).
+Proof.
+    split.
+    - now intros[? ?] [?|?].
+    - intros nab. split; contradict nab; [now left | now right].
+Qed.
+
+Notation "( x ; p )" := (ex_intro _ x p).
+
+Parameter P : X -> Prop.
+Lemma not_forall_equiv : ~ (forall x : X, P x) <-> exists x : X, ~ P x.
+Proof.
+split. 
+- intros nf. apply NNPP. contradict nf. intro x. apply NNPP. exact(fun np => nf (x ; np)).
+(* contradict nf. exact(x ; nf). *)
+(* now exists x.  *)
+- intros [x np] fp. exact(np (fp x)).
+ (* intros [x np] fp. now contradict np. *)
+Qed.
+
+Lemma not_forall_equiv2 : ~ (forall x : X, P x) <-> exists x : X, ~ P x.
+Proof.
+split. 
+- intros nf. 
+
+- intros nf. apply NNPP. contradict nf. intro x. apply NNPP. exact(fun np => nf (x ; np)).
+- intros [x np] fp. exact(np (fp x)).
+
+Lemma not_exists_equiv : ~ (exists x : X, P x) <-> forall x : X, ~ P x.
+Proof.
+split.
+- intros ne x px. exact(ne (x;px)).
+- intros fnp [x px]. exact(fnp x px).
+Qed.
+
+Definition L {A B} (x : A) : A \/ B := or_introl x.
+Definition R {A B} (y : B) : A \/ B := or_intror y.
+Tactic Notation "check" constr(P) "as" ident(p) ident(np) := 
+  destruct (classic P) as [p | np].
+Lemma imp_equiv : (A -> B) <-> (~A \/ B).
+Proof.
+    split. 
+    - intros ab. check A as a na.
+        + exact(R (ab a)).
+        + exact(L na).
+    - now intros [?|?] ?. 
+
+Definition Case {P Result : Prop} (yes : P -> Result) (no : ~P -> Result) : Result :=
+  or_ind yes no (classic P).
+Lemma imp_equiv2 : (A -> B) <-> (~A \/ B).
+Proof.
+    split. 
+    - intros ab. exact(Case (fun a:A => R (ab a))(fun na => L na)).
+    - now intros [?|?] ?. 
+
+
+
+
+
