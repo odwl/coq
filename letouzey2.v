@@ -1,14 +1,14 @@
 Require Import MyProject.Common.  
 
 Parameters A B C : Prop.
-(*   
-Goal (A -> B -> C) -> (A -> B) -> A -> C.
+  
+Lemma ex : (A -> B -> C) -> (A -> B) -> A -> C.
   intros ABC AB A0.
   apply ABC.
     exact A0.
     apply AB.
     assumption.
-Qed. *)
+Qed.
 
 Lemma Exa1 : A -> A.
   intro H. exact H.
@@ -36,7 +36,7 @@ Proof.
 Qed.
 
 
-Require Import Coq.Program.Basics.
+Require Import Stdlib.Program.Basics.
 Lemma Ex12_library : (A -> B) -> (B -> C) -> A -> C.
 Proof.
   intros f g.
