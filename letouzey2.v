@@ -1,11 +1,14 @@
-  Parameters A B C : Prop.
-  Goal (A -> B -> C) -> (A -> B) -> A -> C.
+Require Import MyProject.Common.  
+
+Parameters A B C : Prop.
+(*   
+Goal (A -> B -> C) -> (A -> B) -> A -> C.
   intros ABC AB A0.
   apply ABC.
     exact A0.
     apply AB.
     assumption.
-
+Qed. *)
 
 Lemma Exa1 : A -> A.
   intro H. exact H.
@@ -67,9 +70,6 @@ Proof.
   exact (conj (swap A B) (swap B A)).
 Qed.
 
-
-Notation "'L' x" := (or_introl x) (at level 0).
-Notation "'R' x" := (or_intror x) (at level 0).
 Lemma Ex14 : A \/ B <-> B \/ A.
 Proof.
   pose (swap_or := fun (X Y : Prop) (p : X \/ Y) =>

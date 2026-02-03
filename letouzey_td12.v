@@ -1,5 +1,5 @@
 Require Import MyProject.Common.
-From Coq Require Import Classical_Prop.
+From Stdlib Require Import Classical_Prop.
 
 Section Ex2.
 Parameters X Y : Type.
@@ -62,11 +62,6 @@ Proof.
     split; intro; constructor.
 Qed.
 
-Lemma bot_false : Bot <-> False.
-Proof.
-    split; now intro.
-Qed.
-
 Variable X : Type.
 Inductive MyExists (P : X -> Prop) : Prop :=
   | my_ex_intro x (proof : P x) : MyExists P.
@@ -92,6 +87,7 @@ End Ex3.
 
 Section Ex4.
 Variable A B : Prop.
+Variable X : Type.
 
 Lemma double_neg : ~~A -> A.
 Proof.
@@ -154,6 +150,7 @@ split.
     + assumption.
     + case (nf (x ; npx)).  
 - intros [x np] fp. exact(np (fp x)).
+Qed.
 
 Lemma not_exists_equiv : ~ (exists x : X, P x) <-> forall x : X, ~ P x.
 Proof.
@@ -162,9 +159,6 @@ split.
 - intros fnp [x px]. exact(fnp x px).
 Qed.
 
-Definition L {A B} (x : A) : A \/ B := or_introl x.
-Definition R {A B} (y : B) : A \/ B := or_intror y.
-
 Lemma imp_equiv : (A -> B) <-> (~A \/ B).
 Proof.
     split. 
@@ -172,11 +166,13 @@ Proof.
         + exact(R (ab a)).
         + exact(L na).
     - now intros [?|?] ?. 
+Qed.
 
 Lemma imp_equiv2 : (A -> B) <-> (~A \/ B).
 Proof.
     split. 
     - intros ab. exact(Case (fun a:A => R (ab a))(fun na => L na)).
     - now intros [?|?] ?. 
-
+Qed.
+End Ex4.
 
