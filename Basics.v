@@ -117,12 +117,8 @@ Proof. reflexivity. Qed.
 Example test_power_2_5: power_2 5 = 32.
 Proof. reflexivity. Qed.
 
-Definition swap (p: nat * nat) : nat * nat := 
-match p with 
-  | (a, b) => (b,a)
-end.
-  (* prod_rec _ (fun a b => (b, a)) p. *)
-
+Definition swap {A B : Type} (p : A * B) : B * A :=
+  let '(a, b) := p in (b, a).
 Example test_swap_1: swap (1, 2) = (2, 1).
 Proof. reflexivity. Qed.
 Example test_swap_2: swap (3, 5) = (5, 3).
@@ -150,36 +146,6 @@ Definition intern (x y: nat) (p: nat * nat) : nat * nat :=
 Definition add_vec (p1 p2 : nat * nat) : nat * nat := 
  prod_rec _ (fun x1 y1 => intern x1 y1 p2) p1.
 
- (*Hom[Z, AxB] = Hom[Z, A] x Hom[Z, B]. or (delta -| x  delta: C <-> CxC: x)
- Hom[delta Z, (A,B)] = Hom[Z,A]x Hom[Z,B] iso Hom[Z, AxB]
- ok, to produce a Hom[Z, AxB] you need Hom[Z,A] and Hom[Z,B].
-
- p1 (x,y),p2 (a,b) -> x+a
- p1 (x,y),p2 (a,b) -> y+b
- --> p1*p2 -> (x+a, y+b) and we also have p1*p2 -> p1 and p1*p2 -> p2
- 
- add_vec: N^4 -> nat * nat. I need two  N^4 -> nat 
- p1,p2 -> p11(p1)+p21(p2) and p1,p2 -> p12(p1) + p22(p2).
-
- with prod_rec: I really only give fun x1 y1 => intern x1 y1 p2 
- that is really a N4 -> nat * nat
- could be seen as giving "intern" which really is  x,y fun a b => (x + a, y + b)
- which is equiv to N4 -> N and N4 -> N when you think abuot it.
-
- It looks like prod_rec is to define AxB -> Z but it looks like the wrong direction.
-
- Here Z is N^4. to have add_vec: N^4 -> AxB, we need N^4 -> A and N^4 -> B.
- *)
-  (* match p1 with 
-    | (x1, y1) => intern x1 y1 p2
-  end. *)
-  (* prod_rec 
-    (fun _ => nat * nat)
-    (fun x1 y1 => prod_rec (fun _ => nat * nat)
-                          (fun x2 y2 => (x1 + x2, y1 + y2))
-                          p2)
-    p1. *)
-
 Example test_add_vec_1: add_vec (1, 2) (3, 4) = (4, 6).
 Proof. reflexivity. Qed.
 Example test_add_vec_2: add_vec (0, 0) (5, 5) = (5, 5).
@@ -192,17 +158,7 @@ Proof. reflexivity. Qed.
 
 Definition minus_two (n: nat): nat :=
 nat_rec _ 0 (fun p res => match p with |0 => 0 |1 => 0 |_ => S res end) n.
-(* match n with 
-| 0 => 0
-| 1 => 0
-| S (S p) => p
-end. *)
-(* 0--> 0
-1 --> 0 0 -> 0
-2 --> 1 0 -> 0
-3 --> 2 0 -> 1
-4 --> 3 1 -> 2 
- *)
+
 Example test_minustwo_0: minus_two(0) = 0.
 Proof. reflexivity. Qed.
 Example test_minustwo_1: minus_two(1) = 0.
@@ -211,6 +167,67 @@ Example test_minustwo_2: minus_two(2) = 0.
 Proof. reflexivity. Qed.
 Example test_minustwo_3: minus_two(3) = 1.
 Proof. reflexivity. Qed.
+
+(* Definition swap {A B : Type} (p : A * B) : B * A :=
+  match p with
+  | (a, b) => (b, a)
+  end. *)
+
+Definition even (n: nat): bool :=
+fst(
+  Nat.iter n swap (true, false)
+).
+Example test_even_0: even(0) = true.
+Proof. reflexivity. Qed.
+Example test_even_1: even(1) = false.
+Proof. reflexivity. Qed.
+Example test_even_2: even(2) = true.
+Proof. reflexivity. Qed.
+Example test_even_11: even(11) = false.
+Proof. reflexivity. Qed.
+
+
+
+(* 
+1. 0, true -> false 
+2. 1. false -> true *)
+
+
+(* Fixpoint even (n: nat): bool :=
+match n with 
+| 0 => true
+| (S p) => negb (even p)
+end. *)
+(* 
+Definition even (n: nat): bool :=
+match n with 
+| 0 => true
+| 1 => false
+| S (S p) => even p
+end. *)
+
+Definition odd (n: nat): bool :=
+negb (even n).
+
+Example test_odd_0: odd(0) = false.
+Proof. reflexivity. Qed.
+Example test_odd_1: odd(1) = true.
+Proof. reflexivity. Qed.
+Example test_odd_2: odd(2) = false.
+Proof. reflexivity. Qed.
+Example test_odd_11: odd(11) = true.
+Proof. reflexivity. Qed.
+
+Definition plus (x y: nat) : nat :=
+nat_rec _ y (fun _ res => S res) x.
+
+Example plus_0_0: plus 0 0 = 0.
+Proof. reflexivity. Qed.
+Example plus_3_4: plus 3 4 = 7.
+Proof. reflexivity. Qed.
+
+
+
 
 
 
