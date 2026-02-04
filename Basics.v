@@ -118,7 +118,10 @@ Example test_power_2_5: power_2 5 = 32.
 Proof. reflexivity. Qed.
 
 Definition swap (p: nat * nat) : nat * nat := 
-  prod_rec _ (fun a b => (b, a)) p.
+match p with 
+  | (a, b) => (b,a)
+end.
+  (* prod_rec _ (fun a b => (b, a)) p. *)
 
 Example test_swap_1: swap (1, 2) = (2, 1).
 Proof. reflexivity. Qed.
@@ -128,6 +131,87 @@ Example test_swap_3: swap (0, 7) = (7, 0).
 Proof. reflexivity. Qed.
 Example test_swap_4: swap (10, 20) = (20, 10).
 Proof. reflexivity. Qed.
+
+(* Question. How to move intern to. inner add_vec*)
+Definition intern (x y: nat) (p: nat * nat) : nat * nat :=  
+  (* match p with |  (a, b) => (a + x, b + y) end. *)
+  prod_rec _ (fun a b => (x + a, y + b)) p.
+
+(* WRONG I think. prod_rec is use to define a function from Z -> nat * nat 
+  instead you give two functions Z -> nat which are. In the match 
+  they are f1: (a, b) -> a + x et f2: (a, b) -> b + y.
+  Similar to universal property (product are limit = terminal object). 
+
+  For the prod_rec is a bit different. instead of (a, b) in Z we define
+  the step function with two arguments because prod as one constructor with two
+  arguments.  Bizarre. Or not.
+*)
+
+Definition add_vec (p1 p2 : nat * nat) : nat * nat := 
+ prod_rec _ (fun x1 y1 => intern x1 y1 p2) p1.
+
+ (*Hom[Z, AxB] = Hom[Z, A] x Hom[Z, B]. or (delta -| x  delta: C <-> CxC: x)
+ Hom[delta Z, (A,B)] = Hom[Z,A]x Hom[Z,B] iso Hom[Z, AxB]
+ ok, to produce a Hom[Z, AxB] you need Hom[Z,A] and Hom[Z,B].
+
+ p1 (x,y),p2 (a,b) -> x+a
+ p1 (x,y),p2 (a,b) -> y+b
+ --> p1*p2 -> (x+a, y+b) and we also have p1*p2 -> p1 and p1*p2 -> p2
+ 
+ add_vec: N^4 -> nat * nat. I need two  N^4 -> nat 
+ p1,p2 -> p11(p1)+p21(p2) and p1,p2 -> p12(p1) + p22(p2).
+
+ with prod_rec: I really only give fun x1 y1 => intern x1 y1 p2 
+ that is really a N4 -> nat * nat
+ could be seen as giving "intern" which really is  x,y fun a b => (x + a, y + b)
+ which is equiv to N4 -> N and N4 -> N when you think abuot it.
+
+ It looks like prod_rec is to define AxB -> Z but it looks like the wrong direction.
+
+ Here Z is N^4. to have add_vec: N^4 -> AxB, we need N^4 -> A and N^4 -> B.
+ *)
+  (* match p1 with 
+    | (x1, y1) => intern x1 y1 p2
+  end. *)
+  (* prod_rec 
+    (fun _ => nat * nat)
+    (fun x1 y1 => prod_rec (fun _ => nat * nat)
+                          (fun x2 y2 => (x1 + x2, y1 + y2))
+                          p2)
+    p1. *)
+
+Example test_add_vec_1: add_vec (1, 2) (3, 4) = (4, 6).
+Proof. reflexivity. Qed.
+Example test_add_vec_2: add_vec (0, 0) (5, 5) = (5, 5).
+Proof. reflexivity. Qed.
+Example test_add_vec_3: add_vec (10, 20) (5, 10) = (15, 30).
+Proof. reflexivity. Qed.
+Example test_add_vec_4: add_vec (2, 3) (2, 3) = (4, 6).
+Proof. reflexivity. Qed.
+
+
+Definition minus_two (n: nat): nat :=
+nat_rec _ 0 (fun p res => match p with |0 => 0 |1 => 0 |_ => S res end) n.
+(* match n with 
+| 0 => 0
+| 1 => 0
+| S (S p) => p
+end. *)
+(* 0--> 0
+1 --> 0 0 -> 0
+2 --> 1 0 -> 0
+3 --> 2 0 -> 1
+4 --> 3 1 -> 2 
+ *)
+Example test_minustwo_0: minus_two(0) = 0.
+Proof. reflexivity. Qed.
+Example test_minustwo_1: minus_two(1) = 0.
+Proof. reflexivity. Qed.
+Example test_minustwo_2: minus_two(2) = 0.
+Proof. reflexivity. Qed.
+Example test_minustwo_3: minus_two(3) = 1.
+Proof. reflexivity. Qed.
+
 
 
 
