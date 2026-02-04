@@ -178,9 +178,11 @@ Example plus_3_4: plus 3 4 = 7.
 Proof. reflexivity. Qed.
 
 Fixpoint eqb (n m : nat) : bool :=
-if n is S p then 
-    if m is S q then eqb p q else false
-    else Nat.eqb m 0.
+match n, m with 
+| S p, S q => eqb p q
+| 0, 0 => true
+| _, _ => false
+end.
 
 Example test_eqb_0_0: eqb 0 0 = true.
 Proof. reflexivity. Qed.
@@ -195,18 +197,48 @@ Proof. reflexivity. Qed.
 Example test_eqb_3_5: eqb 3 5 = false.
 Proof. reflexivity. Qed.
 
+Fixpoint leb (n m: nat): bool :=
+match n, m with 
+| S p, S q => leb p q
+| 0, _ => true
+| _, _ => false
+end.
 
+Example test_leb_0_0: leb 0 0 = true.
+Proof. reflexivity. Qed.
+Example test_leb_0_1: leb 0 1 = true.
+Proof. reflexivity. Qed.
+Example test_leb_1_0: leb 1 0 = false.
+Proof. reflexivity. Qed.
+Example test_leb_2_0: leb 2 0 = false.
+Proof. reflexivity. Qed.
+Example test_leb_1_1: leb 1 1 = true.
+Proof. reflexivity. Qed.
+Example test_leb_3_5: leb 3 5 = true.
+Proof. reflexivity. Qed.
+Example test_leb_5_3: leb 5 3 = false.
+Proof. reflexivity. Qed.
 
+Definition ltb (n m: nat): bool :=
+leb (S n) m.
 
+Example test_ltb_0_0: ltb 0 0 = false.
+Proof. reflexivity. Qed.
+Example test_ltb_0_1: ltb 0 1 = true.
+Proof. reflexivity. Qed.
+Example test_ltb_1_0: ltb 1 0 = false.
+Proof. reflexivity. Qed.
+Example test_ltb_1_1: ltb 1 1 = false.
+Proof. reflexivity. Qed.
+Example test_ltb_2_3: ltb 2 3 = true.
+Proof. reflexivity. Qed.
+Example test_ltb_5_3: ltb 5 3 = false.
+Proof. reflexivity. Qed.
 
-
-
-
-
-
-  
-
-
-
-
-
+Theorem plus_id_example : forall n m:nat,
+  n = m -> n + n = m + m.
+Proof.
+  now intros n m ->. 
+  intros n m e; exact (f_equal Nat.double e ).
+  by move=> n m ->. 
+Qed.
